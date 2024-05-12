@@ -1,0 +1,11 @@
+{
+	"id": "mathmaid",
+	"name": "Mathmaid",
+	"version": "0.1.0",
+	"minAppVersion": "0.1.0",
+	"description": "Render Mermaid diagrams with MathJax support.",
+	"author": "Ray Song",
+	"authorUrl": "https://rayxsong.com",
+	"fundingUrl": "https://rayxsong.com",
+	"isDesktopOnly": false
+}
