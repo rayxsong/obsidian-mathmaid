@@ -43,13 +43,21 @@ export class MathmaidView extends ItemView {
     diagramContainer?.remove();
 
     // Wrap in a mermaid div and render
-    const diagramDiv = container.createEl("div", {
-      cls: "mermaid mermaid-output"
-    });
+    const diagramDiv = document.createElement("div");
+    diagramDiv.className = "mermaid mermaid-output";
+    container.appendChild(diagramDiv);
+
     mermaid.initialize({ startOnLoad: false });
     try {
       const { svg } = await mermaid.render("mermaid-diagram", mermaidCode);
-      diagramDiv.innerHTML = svg;
+      
+      const cleanedSvgContent = svg.replace(/<br>/g, '<br/>').replace(/<\/br>/g, '<br/>');
+      const parser = new DOMParser();
+      const svgContent = parser.parseFromString(cleanedSvgContent, "image/svg+xml");
+      const svgElement = svgContent.documentElement;
+
+      diagramDiv.appendChild(svgElement);
+      
       this.createDownloadButton(svg, container);
       this.lastRenderedSVG = svg;  // Store the SVG content
       const insertButton = container.querySelector("button:nth-of-type(2)") as HTMLButtonElement;
@@ -104,6 +112,7 @@ export class MathmaidView extends ItemView {
     const cleanedSvgContent = svgContent.replace(/<br>/g, '<br/>').replace(/<\/br>/g, '<br/>');
 
     const fileName = `Diagram-${Date.now()}.svg`;
+    // const svg = cleanedSvgContent.replace(/<svg /, '<svg width="50%" height="50%" ');
     const file = new Blob([cleanedSvgContent], { type: "image/svg+xml;charset=utf-8" });
     await this.app.vault.createBinary(fileName, await file.arrayBuffer());
 
